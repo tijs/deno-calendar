@@ -50,6 +50,7 @@ export interface CalendarEventInput {
   location?: string;
   description?: string;
   recurrence?: RecurrenceRule;
+  uid?: string; // Optional: preserve UID when updating existing events
 }
 
 /**

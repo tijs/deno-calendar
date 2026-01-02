@@ -9,7 +9,8 @@ import type { CalendarEventInput } from "../types.ts";
  * Generate ICS format from event object
  */
 export function generateICS(event: CalendarEventInput): string {
-  const uid = generateUID();
+  // Use provided UID (for updates) or generate new one (for creates)
+  const uid = event.uid || generateUID();
   const dtstamp = formatICSDateTime(new Date());
 
   // Determine if this is an all-day event

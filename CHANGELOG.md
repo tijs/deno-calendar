@@ -13,6 +13,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Unified client abstraction for multi-provider usage
 - Full VTIMEZONE support for event creation
 
+## [0.2.2] - 2026-01-02
+
+### Fixed
+
+- **Critical: UID preservation for updates** - Fixed updateEvent() creating duplicates instead of
+  updating existing events
+- generateICS() now accepts optional `uid` parameter to preserve UID when updating
+- Added `uid` field to CalendarEventInput interface
+- Fixes issue where updates would generate new UID and create duplicate events in CalDAV
+
 ## [0.2.1] - 2026-01-02
 
 ### Fixed
