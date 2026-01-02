@@ -11,10 +11,11 @@
 - 🦕 **Deno-native** - No npm dependencies, uses native fetch
 - 📅 **Multi-provider** - iCloud (CalDAV) + Google Calendar (REST API)
 - ✍️ **Full CRUD** - Read, create, update, delete events
-- 🔄 **Recurring events** - DAILY, WEEKLY, MONTHLY with RRULE support
+- 🔄 **Recurring events** - DAILY, WEEKLY, MONTHLY with RRULE support (BYDAY, INTERVAL, UNTIL)
+- 🌍 **All timezones** - Dynamic VTIMEZONE generation for 500+ IANA timezones
 - 🔐 **Secure** - OAuth 2.0 for Google, app-specific passwords for iCloud
 - 🎯 **Type-safe** - Full TypeScript support
-- 🧪 **Well-tested** - Comprehensive test suite
+- 🧪 **Well-tested** - 49 tests passing
 
 ## Quick Start
 
@@ -24,33 +25,30 @@
 deno add @tijs/deno-calendar
 ```
 
-### Read Events (iCloud)
+### iCloud (CalDAV)
 
 ```typescript
 import { CalDAVClient } from "@tijs/deno-calendar";
 
 const client = new CalDAVClient({
   appleId: "user@icloud.com",
-  appPassword: "xxxx-xxxx-xxxx-xxxx",
-  timezone: "America/Los_Angeles", // Optional: default timezone
+  appPassword: "xxxx-xxxx-xxxx-xxxx", // App-specific password
 });
 
 const events = await client.fetchEvents(7); // Next 7 days
 console.log(events);
-// Events with TZID will have timezone property set
 ```
 
-### Create Event (Google Calendar)
+### Google Calendar
 
 ```typescript
 import { GoogleCalendarClient } from "@tijs/deno-calendar";
 
 const client = new GoogleCalendarClient({
-  refreshToken: "...",
-  clientId: "...",
-  clientSecret: "...",
+  accessToken: "ya29.a0...", // From OAuth 2.0 flow
 });
 
+const events = await client.fetchEvents({ days: 7, calendar: "primary" });
 await client.createEvent("primary", {
   summary: "Team Meeting",
   start: "2025-01-10T14:00:00Z",
@@ -59,19 +57,23 @@ await client.createEvent("primary", {
 });
 ```
 
-### Unified Client (Multi-Provider)
+### OAuth 2.0 Flow (Google)
 
 ```typescript
-import { UnifiedCalendarClient } from "@tijs/deno-calendar";
+import { exchangeCodeForTokens, generateAuthUrl } from "@tijs/deno-calendar";
 
-const client = UnifiedCalendarClient.create("icloud", {
-  appleId: "user@icloud.com",
-  appPassword: "...",
+// Step 1: Generate auth URL
+const authUrl = generateAuthUrl({
+  clientId: "your-client-id.apps.googleusercontent.com",
+  clientSecret: "your-client-secret",
+  redirectUri: "http://localhost:3000/callback",
 });
 
-// Same API for both providers
-const events = await client.fetchEvents({ days: 7 });
-await client.createEvent("Work", eventData);
+// Step 2: Redirect user to authUrl, they authorize and return with code
+
+// Step 3: Exchange code for tokens
+const tokens = await exchangeCodeForTokens(config, code);
+// Save tokens.access_token and tokens.refresh_token
 ```
 
 ## Timezone Handling
@@ -119,8 +121,10 @@ await client.createEvent(calendarUrl, {
 
 - **All IANA timezones supported!** (500+ timezones)
 - Dynamic VTIMEZONE generation using Intl API
-- Examples: `Europe/Amsterdam`, `America/Los_Angeles`, `Asia/Tokyo`, `Pacific/Auckland`, `Africa/Cairo`, etc.
-- Full list: Any valid [IANA timezone identifier](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+- Examples: `Europe/Amsterdam`, `America/Los_Angeles`, `Asia/Tokyo`, `Pacific/Auckland`,
+  `Africa/Cairo`, etc.
+- Full list: Any valid
+  [IANA timezone identifier](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 **Benefits of timezone support:**
 
@@ -139,11 +143,11 @@ await client.createEvent(calendarUrl, {
 
 ## Supported Providers
 
-| Provider        | Protocol   | Read | Write | Recurring Events |
-| --------------- | ---------- | ---- | ----- | ---------------- |
-| iCloud          | CalDAV     | ✅   | ✅    | ✅               |
-| Google Calendar | REST API   | ✅   | ✅    | ✅               |
-| Outlook         | ⏳ Planned |      |       |                  |
+| Provider        | Protocol  | Read | Write | Recurring | Timezones | Status       |
+| --------------- | --------- | ---- | ----- | --------- | --------- | ------------ |
+| iCloud          | CalDAV    | ✅   | ✅    | ✅        | ✅        | Production   |
+| Google Calendar | REST API  | ✅   | ✅    | ✅        | ✅        | Production   |
+| Outlook         | Graph API | ⏳   | ⏳    | ⏳        | ⏳        | Planned v2.0 |
 
 ## Development
 

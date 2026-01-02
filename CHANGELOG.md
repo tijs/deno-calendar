@@ -9,8 +9,36 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Planned
 
-- Google Calendar API client with OAuth 2.0 (v2.0.0)
 - Unified client abstraction for multi-provider usage (v2.0.0)
+- Microsoft Outlook/Office 365 support via Microsoft Graph API (v2.0.0)
+
+## [1.0.0] - 2026-01-02
+
+### Added
+
+- **Google Calendar support** - Full REST API client with OAuth 2.0
+  - GoogleCalendarClient with CRUD operations (create, read, update, delete)
+  - OAuth 2.0 helper utilities (generateAuthUrl, exchangeCodeForTokens, refreshAccessToken)
+  - Automatic token refresh when access token expires
+  - Full mapping between Google Calendar JSON and CalendarEvent types
+  - Support for recurring events via RRULE
+  - Support for all-day events and timezone-aware events
+- Google Calendar examples (OAuth flow + CRUD operations)
+- Comprehensive Google Calendar test suite (11 new tests, 49 total passing)
+- OAuth scopes constants for fine-grained permissions
+
+### Changed
+
+- Updated README to showcase both CalDAV and Google Calendar providers
+- Updated provider comparison table to show production status
+- Library now truly multi-provider (iCloud + Google Calendar)
+
+### Benefits
+
+- Users can choose between iCloud (CalDAV) and Google Calendar (REST API)
+- Same CalendarEvent interface works across both providers
+- OAuth 2.0 flow helpers simplify Google Calendar authentication
+- Production-ready for both providers
 
 ## [0.4.0] - 2026-01-02
 
@@ -121,7 +149,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Secure credential management
 - ETag-based optimistic concurrency control
 
-[Unreleased]: https://github.com/tijs/deno-calendar/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/tijs/deno-calendar/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/tijs/deno-calendar/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/tijs/deno-calendar/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tijs/deno-calendar/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/tijs/deno-calendar/compare/v0.2.1...v0.2.2
