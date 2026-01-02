@@ -24,6 +24,9 @@ export type { CalDAVClientConfig } from "./caldav/client.ts";
 // Export ICS parser utilities (for advanced usage)
 export { extractICSField, parseICS, parseICSDate } from "./caldav/ics-parser.ts";
 
+// Export ICS generator utilities (for advanced usage)
+export { generateICS } from "./caldav/ics-generator.ts";
+
 // TODO: Export Google Calendar client when implemented
 // export { GoogleCalendarClient } from "./google/client.ts";
 // export type { GoogleCalendarClientConfig } from "./google/client.ts";

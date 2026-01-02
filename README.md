@@ -81,11 +81,11 @@ await client.createEvent("Work", eventData);
 
 ## Supported Providers
 
-| Provider | Protocol | Read | Write | Recurring Events |
-|----------|----------|------|-------|------------------|
-| iCloud | CalDAV | ✅ | ✅ | ✅ |
-| Google Calendar | REST API | ✅ | ✅ | ✅ |
-| Outlook | ⏳ Planned | | | |
+| Provider        | Protocol   | Read | Write | Recurring Events |
+| --------------- | ---------- | ---- | ----- | ---------------- |
+| iCloud          | CalDAV     | ✅   | ✅    | ✅               |
+| Google Calendar | REST API   | ✅   | ✅    | ✅               |
+| Outlook         | ⏳ Planned |      |       |                  |
 
 ## Development
 
@@ -117,5 +117,6 @@ MIT © [Tijs Teulings](https://github.com/tijs)
 ## Acknowledgments
 
 Built with inspiration from:
+
 - [tsdav](https://github.com/natelindev/tsdav) - Node.js CalDAV client
 - [RFC 4791](https://www.ietf.org/rfc/rfc4791.txt) - CalDAV specification

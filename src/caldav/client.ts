@@ -379,9 +379,7 @@ export class CalDAVClient {
     }
 
     // Sort by start time
-    allEvents.sort((a, b) =>
-      new Date(a.start).getTime() - new Date(b.start).getTime()
-    );
+    allEvents.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
     // Update cache
     this.cache.events = allEvents;
@@ -393,6 +391,144 @@ export class CalDAVClient {
     );
 
     return allEvents;
+  }
+
+  /**
+   * Create a new event in a calendar
+   */
+  async createEvent(
+    calendarUrl: string,
+    event: import("../types.ts").CalendarEventInput,
+  ): Promise<import("../types.ts").CreateEventResult> {
+    const { generateICS } = await import("./ics-generator.ts");
+    const icsData = generateICS(event);
+
+    // Generate a unique filename for the event
+    const uid = icsData.match(/UID:([^\r\n]+)/)?.[1] || crypto.randomUUID();
+    const eventUrl = `${calendarUrl}${uid}.ics`;
+
+    // Ensure calendarUrl is absolute
+    const absoluteEventUrl = eventUrl.startsWith("http://") ||
+        eventUrl.startsWith("https://")
+      ? eventUrl
+      : `${this.baseUrl}${eventUrl}`;
+
+    // PUT with If-None-Match: * (create only if doesn't exist)
+    const response = await this.request(
+      absoluteEventUrl,
+      "PUT",
+      icsData,
+      {
+        "Content-Type": "text/calendar; charset=utf-8",
+        "If-None-Match": "*",
+      },
+    );
+
+    if (!response.ok) {
+      if (response.status === 412) {
+        throw new Error(
+          "Event already exists (precondition failed). Use updateEvent to modify existing events.",
+        );
+      }
+      throw new Error(
+        `Failed to create event: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    // Extract ETag from response
+    const etag = response.headers.get("ETag") || undefined;
+
+    // Invalidate cache since we added an event
+    this.invalidateCache();
+
+    return { uid, etag };
+  }
+
+  /**
+   * Update an existing event
+   */
+  async updateEvent(
+    eventUrl: string,
+    event: import("../types.ts").CalendarEventInput,
+    etag: string,
+  ): Promise<import("../types.ts").UpdateEventResult> {
+    const { generateICS } = await import("./ics-generator.ts");
+    const icsData = generateICS(event);
+
+    // Ensure eventUrl is absolute
+    const absoluteEventUrl = eventUrl.startsWith("http://") ||
+        eventUrl.startsWith("https://")
+      ? eventUrl
+      : `${this.baseUrl}${eventUrl}`;
+
+    // PUT with If-Match: etag (update only if ETag matches)
+    const response = await this.request(
+      absoluteEventUrl,
+      "PUT",
+      icsData,
+      {
+        "Content-Type": "text/calendar; charset=utf-8",
+        "If-Match": etag,
+      },
+    );
+
+    if (!response.ok) {
+      if (response.status === 412) {
+        throw new Error(
+          "Event was modified by another client (ETag mismatch). Fetch the latest version and try again.",
+        );
+      }
+      if (response.status === 404) {
+        throw new Error("Event not found. It may have been deleted.");
+      }
+      throw new Error(
+        `Failed to update event: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    // Get new ETag
+    const newEtag = response.headers.get("ETag") || etag;
+
+    // Invalidate cache
+    this.invalidateCache();
+
+    return { etag: newEtag };
+  }
+
+  /**
+   * Delete an event
+   */
+  async deleteEvent(eventUrl: string, etag: string): Promise<void> {
+    // Ensure eventUrl is absolute
+    const absoluteEventUrl = eventUrl.startsWith("http://") ||
+        eventUrl.startsWith("https://")
+      ? eventUrl
+      : `${this.baseUrl}${eventUrl}`;
+
+    // DELETE with If-Match: etag
+    const response = await this.request(
+      absoluteEventUrl,
+      "DELETE",
+      undefined,
+      { "If-Match": etag },
+    );
+
+    if (!response.ok) {
+      if (response.status === 412) {
+        throw new Error(
+          "Event was modified by another client (ETag mismatch). Fetch the latest version and try again.",
+        );
+      }
+      if (response.status === 404) {
+        throw new Error("Event not found. It may have already been deleted.");
+      }
+      throw new Error(
+        `Failed to delete event: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    // Invalidate cache
+    this.invalidateCache();
   }
 
   /**
