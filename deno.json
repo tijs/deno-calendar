@@ -1,0 +1,34 @@
+{
+  "name": "@tijs/deno-calendar",
+  "version": "0.1.0",
+  "exports": "./src/mod.ts",
+  "description": "Multi-provider calendar client for Deno with CalDAV and Google Calendar support",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tijs/deno-calendar"
+  },
+  "tasks": {
+    "test": "deno test --allow-net --allow-env",
+    "test:coverage": "deno test --allow-net --allow-env --coverage=coverage",
+    "lint": "deno lint",
+    "fmt": "deno fmt",
+    "check": "deno check src/**/*.ts tests/**/*.ts",
+    "publish": "deno publish --allow-dirty"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  },
+  "fmt": {
+    "semiColons": true,
+    "lineWidth": 100,
+    "indentWidth": 2
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  }
+}
