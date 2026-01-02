@@ -23,9 +23,7 @@ if (events.length === 0) {
   console.log(`Found ${events.length} events:\n`);
   for (const event of events) {
     const date = event.start.split("T")[0];
-    const time = event.all_day
-      ? "All day"
-      : event.start.split("T")[1]?.slice(0, 5) || "Unknown";
+    const time = event.all_day ? "All day" : event.start.split("T")[1]?.slice(0, 5) || "Unknown";
 
     console.log(`📅 ${event.summary}`);
     console.log(`   Calendar: ${event.calendar}`);

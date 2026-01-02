@@ -20,7 +20,7 @@ export function generateICS(event: CalendarEventInput): string {
   const dtend = isAllDay ? formatICSDate(event.end) : formatICSDateTime(new Date(event.end));
 
   // Build ICS content
-  let ics = [
+  const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//Deno Calendar//CalDAV Client//EN",
