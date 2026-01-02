@@ -15,6 +15,7 @@ export function parseICS(
   try {
     const summary = extractICSField(icsData, "SUMMARY") || "Untitled";
     const rrule = extractICSField(icsData, "RRULE");
+    const timezone = extractTimezone(icsData, "DTSTART");
 
     const event: CalendarEvent = {
       calendar: calendarName,
@@ -24,6 +25,7 @@ export function parseICS(
       location: extractICSField(icsData, "LOCATION") || null,
       description: extractICSField(icsData, "DESCRIPTION") || null,
       uid: extractICSField(icsData, "UID") || "",
+      timezone: timezone || undefined,
     };
 
     // Skip events without valid start time
@@ -79,6 +81,26 @@ export function extractICSField(icsData: string, field: string): string | null {
         .trim();
 
       return value;
+    }
+  }
+  return null;
+}
+
+/**
+ * Extract timezone from ICS field (TZID parameter)
+ * Example: DTSTART;TZID=America/Los_Angeles:20250110T140000
+ * Returns: "America/Los_Angeles"
+ */
+export function extractTimezone(icsData: string, field: string): string | null {
+  const lines = icsData.split(/\r?\n/);
+
+  for (const line of lines) {
+    if (line.startsWith(field + ";")) {
+      // Look for TZID parameter
+      const tzidMatch = line.match(/TZID=([^:;]+)/);
+      if (tzidMatch) {
+        return tzidMatch[1];
+      }
     }
   }
   return null;

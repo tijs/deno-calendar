@@ -10,6 +10,12 @@ export interface CalDAVClientConfig {
   appleId: string;
   appPassword: string;
   cacheTtlMs?: number;
+  /**
+   * Default timezone for interpreting local times and creating events
+   * IANA timezone identifier (e.g., "America/Los_Angeles", "Europe/Amsterdam")
+   * Defaults to "UTC" if not specified
+   */
+  timezone?: string;
 }
 
 interface CalendarCache {

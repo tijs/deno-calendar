@@ -32,10 +32,12 @@ import { CalDAVClient } from "@tijs/deno-calendar";
 const client = new CalDAVClient({
   appleId: "user@icloud.com",
   appPassword: "xxxx-xxxx-xxxx-xxxx",
+  timezone: "America/Los_Angeles", // Optional: default timezone
 });
 
 const events = await client.fetchEvents(7); // Next 7 days
 console.log(events);
+// Events with TZID will have timezone property set
 ```
 
 ### Create Event (Google Calendar)
@@ -71,6 +73,40 @@ const client = UnifiedCalendarClient.create("icloud", {
 const events = await client.fetchEvents({ days: 7 });
 await client.createEvent("Work", eventData);
 ```
+
+## Timezone Handling
+
+### Reading Events
+
+When reading events, the library preserves timezone information from the ICS data:
+
+```typescript
+const events = await client.fetchEvents(7);
+
+for (const event of events) {
+  console.log(event.summary);
+  console.log(event.start); // ISO string (e.g., "2025-01-10T14:00:00")
+  console.log(event.timezone); // IANA timezone if present (e.g., "America/Los_Angeles")
+}
+```
+
+- **UTC events**: `start` ends with `Z` (e.g., `"2025-01-10T14:00:00Z"`)
+- **Local time with TZID**: `timezone` field contains IANA identifier
+- **Local time without TZID**: No `timezone` field (interpret as configured timezone or UTC)
+
+### Writing Events
+
+Currently, all events are written in UTC format. Provide times as ISO strings:
+
+```typescript
+await client.createEvent(calendarUrl, {
+  summary: "Team Meeting",
+  start: "2025-01-10T22:00:00Z", // UTC
+  end: "2025-01-10T23:00:00Z",
+});
+```
+
+**Note**: Full timezone support with VTIMEZONE components is planned for v1.0.0.
 
 ## Documentation
 

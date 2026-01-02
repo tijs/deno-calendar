@@ -14,6 +14,7 @@ export interface CalendarEvent {
   description: string | null;
   uid: string;
   all_day?: boolean;
+  timezone?: string; // IANA timezone (e.g., "America/Los_Angeles") if present in ICS
 }
 
 /**

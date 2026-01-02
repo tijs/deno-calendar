@@ -104,3 +104,21 @@ END:VCALENDAR`;
   assertEquals(event?.all_day, true);
   assertEquals(event?.start, "2025-01-10");
 });
+
+Deno.test("parseICS extracts timezone from TZID parameter", () => {
+  const icsData = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:test-timezone
+DTSTART;TZID=America/Los_Angeles:20250110T140000
+DTEND;TZID=America/Los_Angeles:20250110T150000
+SUMMARY:Meeting in LA
+END:VEVENT
+END:VCALENDAR`;
+
+  const event = parseICS(icsData, "Test Calendar");
+
+  assertEquals(event?.summary, "Meeting in LA");
+  assertEquals(event?.timezone, "America/Los_Angeles");
+  assertEquals(event?.start, "2025-01-10T14:00:00");
+});
