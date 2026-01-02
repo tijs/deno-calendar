@@ -17,7 +17,11 @@ import {
 Deno.test("VTIMEZONE - Europe/Amsterdam generates correctly", () => {
   const vtimezone = generateVTIMEZONE("Europe/Amsterdam");
 
-  assertEquals(vtimezone !== null, true, "Should generate VTIMEZONE for Europe/Amsterdam");
+  assertEquals(
+    vtimezone !== null,
+    true,
+    "Should generate VTIMEZONE for Europe/Amsterdam",
+  );
   assertStringIncludes(vtimezone!, "BEGIN:VTIMEZONE");
   assertStringIncludes(vtimezone!, "TZID:Europe/Amsterdam");
   assertStringIncludes(vtimezone!, "BEGIN:STANDARD");
@@ -49,7 +53,11 @@ Deno.test("VTIMEZONE - Asia/Tokyo (no DST) generates correctly", () => {
   assertStringIncludes(vtimezone!, "BEGIN:STANDARD");
   assertStringIncludes(vtimezone!, "TZOFFSETTO:+0900");
   assertStringIncludes(vtimezone!, "TZNAME:"); // Has some timezone name
-  assertEquals(vtimezone!.includes("BEGIN:DAYLIGHT"), false, "Should not have daylight component");
+  assertEquals(
+    vtimezone!.includes("BEGIN:DAYLIGHT"),
+    false,
+    "Should not have daylight component",
+  );
 });
 
 // Test unsupported timezone returns null
@@ -93,7 +101,11 @@ Deno.test("Event with timezone - Uses TZID parameter in DTSTART/DTEND", () => {
   const veventEnd = ics.indexOf("END:VEVENT");
   const vevent = ics.substring(veventStart, veventEnd);
   const hasUTCFormat = /DTSTART:\d{8}T\d{6}Z/.test(vevent);
-  assertEquals(hasUTCFormat, false, "VEVENT should not use UTC format with Z suffix");
+  assertEquals(
+    hasUTCFormat,
+    false,
+    "VEVENT should not use UTC format with Z suffix",
+  );
 });
 
 // Test event without timezone uses UTC (backward compatible)
@@ -108,7 +120,11 @@ Deno.test("Event without timezone - Uses UTC format (backward compatible)", () =
 
   assertStringIncludes(ics, "DTSTART:20260105T100000Z");
   assertStringIncludes(ics, "DTEND:20260105T110000Z");
-  assertEquals(ics.includes("BEGIN:VTIMEZONE"), false, "Should not include VTIMEZONE");
+  assertEquals(
+    ics.includes("BEGIN:VTIMEZONE"),
+    false,
+    "Should not include VTIMEZONE",
+  );
   assertEquals(ics.includes("TZID"), false, "Should not use TZID parameter");
 });
 
@@ -123,7 +139,11 @@ Deno.test("All-day event - Does not include VTIMEZONE even with timezone", () =>
 
   const ics = generateICS(event);
 
-  assertEquals(ics.includes("BEGIN:VTIMEZONE"), false, "All-day events should not have VTIMEZONE");
+  assertEquals(
+    ics.includes("BEGIN:VTIMEZONE"),
+    false,
+    "All-day events should not have VTIMEZONE",
+  );
   assertStringIncludes(ics, "DTSTART;VALUE=DATE:20260105");
   assertStringIncludes(ics, "DTEND;VALUE=DATE:20260106");
 });
@@ -165,7 +185,11 @@ Deno.test("Unsupported timezone - Falls back to UTC", () => {
     false,
     "Should not include VTIMEZONE for unsupported timezone",
   );
-  assertStringIncludes(ics, "DTSTART:20260105T100000Z", "Should fall back to UTC");
+  assertStringIncludes(
+    ics,
+    "DTSTART:20260105T100000Z",
+    "Should fall back to UTC",
+  );
 });
 
 // Test round-trip: generate with timezone → parse → verify
@@ -210,7 +234,11 @@ Deno.test("isSupportedTimezone - Returns true for all valid IANA timezones", () 
 Deno.test("getSupportedTimezones - Returns list of common timezones", () => {
   const timezones = getSupportedTimezones();
 
-  assertEquals(timezones.length > 0, true, "Should return at least one timezone");
+  assertEquals(
+    timezones.length > 0,
+    true,
+    "Should return at least one timezone",
+  );
   assertEquals(timezones.includes("Europe/Amsterdam"), true);
   assertEquals(timezones.includes("America/Los_Angeles"), true);
   assertEquals(timezones.includes("Asia/Tokyo"), true);
@@ -229,7 +257,11 @@ Deno.test("VTIMEZONE - Supports all IANA timezones dynamically", () => {
 
   for (const tz of testTimezones) {
     const vtimezone = generateVTIMEZONE(tz);
-    assertEquals(vtimezone !== null, true, `Should generate VTIMEZONE for ${tz}`);
+    assertEquals(
+      vtimezone !== null,
+      true,
+      `Should generate VTIMEZONE for ${tz}`,
+    );
     assertStringIncludes(vtimezone!, "BEGIN:VTIMEZONE");
     assertStringIncludes(vtimezone!, `TZID:${tz}`);
     assertStringIncludes(vtimezone!, "END:VTIMEZONE");
@@ -243,7 +275,11 @@ Deno.test("VTIMEZONE - DST transitions include RRULE", () => {
   assertEquals(vtimezone !== null, true);
   // Check that RRULE is present for both transitions (exact pattern may vary by year)
   const rruleCount = (vtimezone!.match(/RRULE:FREQ=YEARLY/g) || []).length;
-  assertEquals(rruleCount, 2, "Should have RRULE for both standard and daylight transitions");
+  assertEquals(
+    rruleCount,
+    2,
+    "Should have RRULE for both standard and daylight transitions",
+  );
   assertStringIncludes(vtimezone!, "BYMONTH="); // Has month specification
   assertStringIncludes(vtimezone!, "BYDAY="); // Has day specification
 });
@@ -265,6 +301,14 @@ Deno.test("VTIMEZONE - Correct position in ICS structure", () => {
   const veventIndex = lines.findIndex((line) => line === "BEGIN:VEVENT");
 
   assertEquals(prodidIndex > -1, true, "Should have PRODID");
-  assertEquals(vtimezoneIndex > prodidIndex, true, "VTIMEZONE should be after PRODID");
-  assertEquals(veventIndex > vtimezoneIndex, true, "VEVENT should be after VTIMEZONE");
+  assertEquals(
+    vtimezoneIndex > prodidIndex,
+    true,
+    "VTIMEZONE should be after PRODID",
+  );
+  assertEquals(
+    veventIndex > vtimezoneIndex,
+    true,
+    "VEVENT should be after VTIMEZONE",
+  );
 });

@@ -12,9 +12,34 @@ import type { GoogleEvent, GoogleEventDateTime } from "./types.ts";
 export function mapGoogleEventToCalendarEvent(
   googleEvent: GoogleEvent,
   calendarName: string,
+  userEmail?: string,
 ): CalendarEvent {
-  const { start, end } = parseGoogleDateTime(googleEvent.start, googleEvent.end);
+  const { start, end } = parseGoogleDateTime(
+    googleEvent.start,
+    googleEvent.end,
+  );
   const isAllDay = !!googleEvent.start.date;
+
+  // Extract user's attendance status if available
+  let attendanceStatus:
+    | "accepted"
+    | "declined"
+    | "tentative"
+    | "needs_action"
+    | undefined;
+
+  if (userEmail && googleEvent.attendees) {
+    const userAttendee = googleEvent.attendees.find((attendee) =>
+      attendee.email.toLowerCase() === userEmail.toLowerCase()
+    );
+
+    if (userAttendee?.responseStatus) {
+      // Map Google's camelCase to our snake_case
+      attendanceStatus = userAttendee.responseStatus === "needsAction"
+        ? "needs_action"
+        : userAttendee.responseStatus;
+    }
+  }
 
   return {
     calendar: calendarName,
@@ -27,6 +52,7 @@ export function mapGoogleEventToCalendarEvent(
     all_day: isAllDay,
     timezone: googleEvent.start.timeZone,
     etag: googleEvent.etag,
+    attendance_status: attendanceStatus,
   };
 }
 

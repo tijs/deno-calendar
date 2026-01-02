@@ -12,6 +12,29 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Unified client abstraction for multi-provider usage (v2.0.0)
 - Microsoft Outlook/Office 365 support via Microsoft Graph API (v2.0.0)
 
+## [1.1.0] - 2026-01-02
+
+### Added
+
+- **Attendance status tracking** - Google Calendar events now include user's response status
+  - `attendance_status` field added to CalendarEvent interface
+  - Values: "accepted", "declined", "tentative", "needs_action", or undefined
+  - GoogleCalendarClient now accepts optional `userEmail` to extract attendance from attendees list
+  - Enables filtering/annotating events based on user's attendance response
+  - Particularly useful for identifying declined meetings that won't be attended
+
+### Changed
+
+- GoogleCalendarClientConfig interface expanded with optional `userEmail?: string` field
+- mapGoogleEventToCalendarEvent() now accepts optional `userEmail` parameter
+- Attendance status automatically extracted by matching user's email in attendees list
+
+### Benefits
+
+- Users can see at a glance which meetings they've declined
+- Enables smarter calendar filtering (show only accepted meetings)
+- Reduces confusion about which events actually need attention
+
 ## [1.0.0] - 2026-01-02
 
 ### Added
@@ -149,7 +172,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Secure credential management
 - ETag-based optimistic concurrency control
 
-[Unreleased]: https://github.com/tijs/deno-calendar/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/tijs/deno-calendar/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/tijs/deno-calendar/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/tijs/deno-calendar/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/tijs/deno-calendar/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tijs/deno-calendar/compare/v0.2.2...v0.3.0

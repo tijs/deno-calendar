@@ -103,7 +103,10 @@ function detectDSTTransitions(tzid: string, year = 2025): {
   // Find approximate transition dates by looking for offset changes
   let daylightTransition: Date | undefined;
   for (let i = 1; i < offsets.length; i++) {
-    if (offsets[i].offset === daylightOffset && offsets[i - 1].offset === standardOffset) {
+    if (
+      offsets[i].offset === daylightOffset &&
+      offsets[i - 1].offset === standardOffset
+    ) {
       // Transition to daylight time
       daylightTransition = offsets[i].date;
       break;
@@ -112,7 +115,10 @@ function detectDSTTransitions(tzid: string, year = 2025): {
 
   let standardTransition: Date | undefined;
   for (let i = 1; i < offsets.length; i++) {
-    if (offsets[i].offset === standardOffset && offsets[i - 1].offset === daylightOffset) {
+    if (
+      offsets[i].offset === standardOffset &&
+      offsets[i - 1].offset === daylightOffset
+    ) {
       // Transition to standard time
       standardTransition = offsets[i].date;
       break;
@@ -187,7 +193,9 @@ export function generateVTIMEZONE(tzid: string): string | null {
   // Add STANDARD component
   lines.push("BEGIN:STANDARD");
   if (transitions.standard.transitionDate) {
-    lines.push(`DTSTART:${formatTransitionDate(transitions.standard.transitionDate)}`);
+    lines.push(
+      `DTSTART:${formatTransitionDate(transitions.standard.transitionDate)}`,
+    );
     lines.push(`RRULE:${generateDSTRule(transitions.standard.transitionDate)}`);
   } else {
     // No DST transitions - use epoch date
@@ -206,7 +214,9 @@ export function generateVTIMEZONE(tzid: string): string | null {
   // Add DAYLIGHT component if DST exists
   if (transitions.daylight) {
     lines.push("BEGIN:DAYLIGHT");
-    lines.push(`DTSTART:${formatTransitionDate(transitions.daylight.transitionDate)}`);
+    lines.push(
+      `DTSTART:${formatTransitionDate(transitions.daylight.transitionDate)}`,
+    );
     lines.push(`RRULE:${generateDSTRule(transitions.daylight.transitionDate)}`);
     lines.push(`TZOFFSETFROM:${formatOffset(transitions.standard.offset)}`);
     lines.push(`TZOFFSETTO:${formatOffset(transitions.daylight.offset)}`);

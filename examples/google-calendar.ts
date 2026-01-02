@@ -67,7 +67,9 @@ try {
   console.log("\n=== Creating Recurring Event ===\n");
 
   const nextMonday = new Date();
-  nextMonday.setDate(nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7 || 7));
+  nextMonday.setDate(
+    nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7 || 7),
+  );
   nextMonday.setHours(10, 0, 0, 0);
 
   const mondayEnd = new Date(nextMonday);
@@ -108,6 +110,8 @@ try {
   console.error(error instanceof Error ? error.message : "Unknown error");
 
   if (error instanceof Error && error.message.includes("401")) {
-    console.error("\nYour access token may have expired. Run google-oauth.ts again.");
+    console.error(
+      "\nYour access token may have expired. Run google-oauth.ts again.",
+    );
   }
 }

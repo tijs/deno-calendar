@@ -23,7 +23,10 @@ Deno.test("Google OAuth - generateAuthUrl creates valid URL", () => {
 
   assertStringIncludes(authUrl, "https://accounts.google.com/o/oauth2/v2/auth");
   assertStringIncludes(authUrl, "client_id=test-client-id");
-  assertStringIncludes(authUrl, "redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback");
+  assertStringIncludes(
+    authUrl,
+    "redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback",
+  );
   assertStringIncludes(authUrl, "response_type=code");
   assertStringIncludes(authUrl, "access_type=offline");
 });

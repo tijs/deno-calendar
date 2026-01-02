@@ -62,7 +62,10 @@ Deno.test("generateICS handles recurring events", () => {
 
   // INTERVAL=1 is optional (default), so we use interval=2 to test it appears
   // UNTIL should be formatted as DATE-TIME when provided
-  assertEquals(ics.includes("RRULE:FREQ=WEEKLY;INTERVAL=2;UNTIL=20250331T000000Z"), true);
+  assertEquals(
+    ics.includes("RRULE:FREQ=WEEKLY;INTERVAL=2;UNTIL=20250331T000000Z"),
+    true,
+  );
 });
 
 Deno.test("parseICS parses basic event", () => {

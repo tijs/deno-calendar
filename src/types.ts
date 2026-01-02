@@ -16,6 +16,7 @@ export interface CalendarEvent {
   all_day?: boolean;
   timezone?: string; // IANA timezone (e.g., "America/Los_Angeles") if present in ICS
   etag?: string; // ETag for optimistic concurrency control (used for updates/deletes)
+  attendance_status?: "accepted" | "declined" | "tentative" | "needs_action"; // User's attendance status (Google Calendar only)
 }
 
 /**

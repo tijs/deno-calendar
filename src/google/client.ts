@@ -24,6 +24,8 @@ export interface GoogleCalendarClientConfig {
   /** Optional: Client credentials for token refresh */
   clientId?: string;
   clientSecret?: string;
+  /** Optional: User's email for extracting attendance status */
+  userEmail?: string;
 }
 
 /**
@@ -34,6 +36,7 @@ export class GoogleCalendarClient {
   private refreshToken?: string;
   private clientId?: string;
   private clientSecret?: string;
+  private userEmail?: string;
   private baseUrl = "https://www.googleapis.com/calendar/v3";
 
   constructor(config: GoogleCalendarClientConfig) {
@@ -41,6 +44,7 @@ export class GoogleCalendarClient {
     this.refreshToken = config.refreshToken;
     this.clientId = config.clientId;
     this.clientSecret = config.clientSecret;
+    this.userEmail = config.userEmail;
   }
 
   /**
@@ -63,7 +67,9 @@ export class GoogleCalendarClient {
    * @param options Fetch options (days, calendar filter)
    * @returns Array of calendar events
    */
-  async fetchEvents(options: FetchEventsOptions = {}): Promise<CalendarEvent[]> {
+  async fetchEvents(
+    options: FetchEventsOptions = {},
+  ): Promise<CalendarEvent[]> {
     const { days = 30, calendar = "primary" } = options;
 
     const now = new Date();
@@ -84,7 +90,9 @@ export class GoogleCalendarClient {
     // Get calendar name
     const calendarName = calendar === "primary" ? "Primary" : calendar!;
 
-    return response.items.map((event) => mapGoogleEventToCalendarEvent(event, calendarName));
+    return response.items.map((event) =>
+      mapGoogleEventToCalendarEvent(event, calendarName, this.userEmail)
+    );
   }
 
   /**

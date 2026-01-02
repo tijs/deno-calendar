@@ -44,8 +44,12 @@ export function generateICS(event: CalendarEventInput): string {
     // Use TZID parameter for timezone-aware events
     const vtimezone = generateVTIMEZONE(event.timezone);
     if (vtimezone) {
-      ics.push(`DTSTART;TZID=${event.timezone}:${formatICSDateTimeLocal(new Date(event.start))}`);
-      ics.push(`DTEND;TZID=${event.timezone}:${formatICSDateTimeLocal(new Date(event.end))}`);
+      ics.push(
+        `DTSTART;TZID=${event.timezone}:${formatICSDateTimeLocal(new Date(event.start))}`,
+      );
+      ics.push(
+        `DTEND;TZID=${event.timezone}:${formatICSDateTimeLocal(new Date(event.end))}`,
+      );
     } else {
       // Fallback to UTC if timezone not supported
       ics.push(`DTSTART:${formatICSDateTime(new Date(event.start))}`);

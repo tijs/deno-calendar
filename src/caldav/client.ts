@@ -266,7 +266,9 @@ export class CalDAVClient {
         /<d:displayname>([^<]+)<\/d:displayname>/,
       );
       if (!nameMatch) {
-        nameMatch = responseXml.match(/<displayname[^>]*>([^<]+)<\/displayname>/);
+        nameMatch = responseXml.match(
+          /<displayname[^>]*>([^<]+)<\/displayname>/,
+        );
       }
 
       if (hrefMatch && nameMatch) {

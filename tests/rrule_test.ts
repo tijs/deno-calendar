@@ -160,7 +160,11 @@ Deno.test("RRULE - Weekly without BYDAY (backward compatible)", () => {
 
   // Should generate RRULE without BYDAY
   assertStringIncludes(ics, "RRULE:FREQ=WEEKLY");
-  assertEquals(ics.includes("BYDAY"), false, "Should not include BYDAY when not specified");
+  assertEquals(
+    ics.includes("BYDAY"),
+    false,
+    "Should not include BYDAY when not specified",
+  );
 });
 
 Deno.test("RRULE - Daily without BYDAY (backward compatible)", () => {
@@ -176,7 +180,11 @@ Deno.test("RRULE - Daily without BYDAY (backward compatible)", () => {
   const ics = generateICS(event);
 
   assertStringIncludes(ics, "RRULE:FREQ=DAILY");
-  assertEquals(ics.includes("BYDAY"), false, "Should not include BYDAY for daily events");
+  assertEquals(
+    ics.includes("BYDAY"),
+    false,
+    "Should not include BYDAY for daily events",
+  );
 });
 
 Deno.test("RRULE - Empty byDay array is ignored", () => {
@@ -193,7 +201,11 @@ Deno.test("RRULE - Empty byDay array is ignored", () => {
   const ics = generateICS(event);
 
   assertStringIncludes(ics, "RRULE:FREQ=WEEKLY");
-  assertEquals(ics.includes("BYDAY"), false, "Should not include BYDAY when array is empty");
+  assertEquals(
+    ics.includes("BYDAY"),
+    false,
+    "Should not include BYDAY when array is empty",
+  );
 });
 
 Deno.test("RRULE - All weekdays", () => {
