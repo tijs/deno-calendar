@@ -116,17 +116,19 @@ await client.createEvent(calendarUrl, {
 ```
 
 **Supported timezones:**
-- `Europe/Amsterdam` (CET/CEST)
-- `America/Los_Angeles` (PST/PDT)
-- `America/New_York` (EST/EDT)
-- `Europe/London` (GMT/BST)
-- `Asia/Tokyo` (JST - no DST)
-- `Australia/Sydney` (AEDT/AEST)
+
+- **All IANA timezones supported!** (500+ timezones)
+- Dynamic VTIMEZONE generation using Intl API
+- Examples: `Europe/Amsterdam`, `America/Los_Angeles`, `Asia/Tokyo`, `Pacific/Auckland`, `Africa/Cairo`, etc.
+- Full list: Any valid [IANA timezone identifier](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 **Benefits of timezone support:**
+
+- Works with ANY timezone out of the box (no hardcoded data)
 - Events display correctly in user's local timezone
-- DST (Daylight Saving Time) handled automatically
+- DST (Daylight Saving Time) transitions automatically detected
 - Full RFC 5545 compliance with VTIMEZONE components
+- Future-proof (timezone rules update with Deno/V8)
 
 ## Documentation
 

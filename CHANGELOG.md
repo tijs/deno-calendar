@@ -16,14 +16,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- **VTIMEZONE component generation** - Full RFC 5545 timezone support for event creation
+- **VTIMEZONE component generation** - Full RFC 5545 timezone support for ALL IANA timezones
   - `timezone` field added to CalendarEventInput interface
-  - VTIMEZONE components generated for 6 common timezones
+  - Dynamic VTIMEZONE generation using Intl API (supports 500+ IANA timezones)
   - DTSTART/DTEND use TZID parameters when timezone specified
-  - Supported timezones: Europe/Amsterdam, America/Los_Angeles, America/New_York, Europe/London, Asia/Tokyo, Australia/Sydney
-- Comprehensive timezone test suite (15 new test cases)
+  - No hardcoded timezone data - works with any valid IANA timezone identifier
+- Comprehensive timezone test suite (16 new test cases, 38 total passing)
 - Timezone utilities: `generateVTIMEZONE()`, `isSupportedTimezone()`, `getSupportedTimezones()`
-- DST (Daylight Saving Time) transitions with RRULE support
+- DST (Daylight Saving Time) transitions automatically detected with RRULE support
 
 ### Changed
 
