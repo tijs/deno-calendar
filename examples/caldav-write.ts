@@ -35,7 +35,8 @@ const endTime = new Date(tomorrow);
 endTime.setHours(15, 0, 0, 0); // 3 PM
 
 try {
-  const result = await client.createEvent(calendar.url, {
+  // Example 1: Simple one-time event
+  const result1 = await client.createEvent(calendar.url, {
     summary: "Deno Calendar Test Event",
     start: tomorrow.toISOString(),
     end: endTime.toISOString(),
@@ -43,10 +44,52 @@ try {
     description: "This event was created using deno-calendar library!",
   });
 
-  console.log("\n✓ Event created successfully!");
-  console.log(`  UID: ${result.uid}`);
-  console.log(`  ETag: ${result.etag || "N/A"}`);
-  console.log(`\nCheck your calendar for the new event.`);
+  console.log("\n✓ Event 1 created successfully!");
+  console.log(`  UID: ${result1.uid}`);
+  console.log(`  Type: One-time event`);
+
+  // Example 2: Recurring event - Every Monday
+  const nextMonday = new Date();
+  nextMonday.setDate(nextMonday.getDate() + ((1 + 7 - nextMonday.getDay()) % 7 || 7));
+  nextMonday.setHours(10, 0, 0, 0); // 10 AM
+
+  const mondayEnd = new Date(nextMonday);
+  mondayEnd.setHours(11, 0, 0, 0); // 11 AM
+
+  const result2 = await client.createEvent(calendar.url, {
+    summary: "Weekly Team Meeting",
+    start: nextMonday.toISOString(),
+    end: mondayEnd.toISOString(),
+    location: "Zoom",
+    description: "Recurring weekly team sync",
+    recurrence: {
+      frequency: "WEEKLY",
+      byDay: ["MO"],
+    },
+  });
+
+  console.log("\n✓ Event 2 created successfully!");
+  console.log(`  UID: ${result2.uid}`);
+  console.log(`  Type: Recurring weekly (every Monday)`);
+
+  // Example 3: Multiple days per week (Mon/Wed/Fri)
+  const result3 = await client.createEvent(calendar.url, {
+    summary: "MWF Workout",
+    start: nextMonday.toISOString(),
+    end: mondayEnd.toISOString(),
+    location: "Gym",
+    description: "Monday/Wednesday/Friday workout routine",
+    recurrence: {
+      frequency: "WEEKLY",
+      byDay: ["MO", "WE", "FR"],
+    },
+  });
+
+  console.log("\n✓ Event 3 created successfully!");
+  console.log(`  UID: ${result3.uid}`);
+  console.log(`  Type: Recurring weekly (Mon/Wed/Fri)`);
+
+  console.log(`\nCheck your calendar for the new events.`);
 } catch (error) {
   console.error("\n✗ Failed to create event:");
   console.error(error instanceof Error ? error.message : "Unknown error");

@@ -113,6 +113,10 @@ function generateRRule(recurrence: CalendarEventInput["recurrence"]): string {
     parts.push(`INTERVAL=${recurrence.interval}`);
   }
 
+  if (recurrence.byDay && recurrence.byDay.length > 0) {
+    parts.push(`BYDAY=${recurrence.byDay.join(",")}`);
+  }
+
   if (recurrence.until) {
     // Format UNTIL date
     const untilDate = new Date(recurrence.until);

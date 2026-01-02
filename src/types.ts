@@ -38,6 +38,15 @@ export interface RecurrenceRule {
   frequency: "DAILY" | "WEEKLY" | "MONTHLY";
   interval?: number;
   until?: string;
+  /**
+   * By day parameter (RFC 5545 BYDAY)
+   * Examples:
+   * - ["MO"] - Every Monday
+   * - ["MO", "WE", "FR"] - Monday, Wednesday, Friday
+   * - ["1FR"] - First Friday of month
+   * - ["-1SU"] - Last Sunday of month
+   */
+  byDay?: string[];
 }
 
 /**

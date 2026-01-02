@@ -9,9 +9,33 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Planned
 
-- Google Calendar API client with OAuth 2.0
-- Unified client abstraction for multi-provider usage
-- Full VTIMEZONE support for event creation
+- Google Calendar API client with OAuth 2.0 (v2.0.0)
+- Unified client abstraction for multi-provider usage (v2.0.0)
+- Full VTIMEZONE support for event creation (v0.4.0)
+
+## [0.3.0] - 2026-01-02
+
+### Added
+
+- **BYDAY parameter support** - Enables complex recurring event patterns
+  - `byDay` field added to RecurrenceRule interface
+  - Supports weekday patterns: ["MO"], ["MO", "WE", "FR"]
+  - Supports nth day of month: ["1FR"] (first Friday), ["-1SU"] (last Sunday)
+  - Supports multiple patterns: ["2TU", "3TH"] (second Tuesday and third Thursday)
+- Comprehensive RRULE test suite (13 new test cases)
+- Updated caldav-write.ts example with BYDAY usage patterns
+
+### Changed
+
+- RecurrenceRule interface expanded with optional `byDay?: string[]` field
+- ICS generator now includes BYDAY in RRULE when specified
+- Backward compatible - existing code without BYDAY continues to work
+
+### Benefits
+
+- Enables "every Monday" type recurring events
+- Fixes calendar specialist agent date calculations
+- Full RFC 5545 BYDAY compliance for CalDAV
 
 ## [0.2.2] - 2026-01-02
 
@@ -71,6 +95,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Secure credential management
 - ETag-based optimistic concurrency control
 
-[Unreleased]: https://github.com/tijs/deno-calendar/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/tijs/deno-calendar/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/tijs/deno-calendar/compare/v0.2.2...v0.3.0
+[0.2.2]: https://github.com/tijs/deno-calendar/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/tijs/deno-calendar/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tijs/deno-calendar/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/tijs/deno-calendar/releases/tag/v0.1.0

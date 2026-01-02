@@ -1,6 +1,6 @@
 {
   "name": "@tijs/deno-calendar",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "exports": "./src/mod.ts",
   "description": "Multi-provider calendar client for Deno with CalDAV and Google Calendar support",
   "license": "MIT",
