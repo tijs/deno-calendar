@@ -89,6 +89,20 @@ try {
   console.log(`  UID: ${result3.uid}`);
   console.log(`  Type: Recurring weekly (Mon/Wed/Fri)`);
 
+  // Example 4: Event with timezone (VTIMEZONE component)
+  const result4 = await client.createEvent(calendar.url, {
+    summary: "Team Sync (Amsterdam)",
+    start: "2025-01-10T10:00:00",
+    end: "2025-01-10T11:00:00",
+    location: "Video Call",
+    description: "Weekly team sync with European office",
+    timezone: "Europe/Amsterdam",
+  });
+
+  console.log("\n✓ Event 4 created successfully!");
+  console.log(`  UID: ${result4.uid}`);
+  console.log(`  Type: Timezone-aware (Europe/Amsterdam CET/CEST)`);
+
   console.log(`\nCheck your calendar for the new events.`);
 } catch (error) {
   console.error("\n✗ Failed to create event:");

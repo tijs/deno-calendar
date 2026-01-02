@@ -11,7 +11,33 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Google Calendar API client with OAuth 2.0 (v2.0.0)
 - Unified client abstraction for multi-provider usage (v2.0.0)
-- Full VTIMEZONE support for event creation (v0.4.0)
+
+## [0.4.0] - 2026-01-02
+
+### Added
+
+- **VTIMEZONE component generation** - Full RFC 5545 timezone support for event creation
+  - `timezone` field added to CalendarEventInput interface
+  - VTIMEZONE components generated for 6 common timezones
+  - DTSTART/DTEND use TZID parameters when timezone specified
+  - Supported timezones: Europe/Amsterdam, America/Los_Angeles, America/New_York, Europe/London, Asia/Tokyo, Australia/Sydney
+- Comprehensive timezone test suite (15 new test cases)
+- Timezone utilities: `generateVTIMEZONE()`, `isSupportedTimezone()`, `getSupportedTimezones()`
+- DST (Daylight Saving Time) transitions with RRULE support
+
+### Changed
+
+- CalendarEventInput interface expanded with optional `timezone?: string` field
+- ICS generator now creates VTIMEZONE components when timezone is specified
+- DTSTART/DTEND format with TZID parameter instead of UTC when timezone provided
+- Backward compatible - events without timezone continue to use UTC format
+
+### Benefits
+
+- Proper timezone handling for calendar events
+- Correct display times in user's local timezone
+- Full RFC 5545 compliance for VTIMEZONE components
+- Fixes timezone display issues in calendar clients
 
 ## [0.3.0] - 2026-01-02
 
@@ -95,7 +121,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Secure credential management
 - ETag-based optimistic concurrency control
 
-[Unreleased]: https://github.com/tijs/deno-calendar/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/tijs/deno-calendar/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/tijs/deno-calendar/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tijs/deno-calendar/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/tijs/deno-calendar/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/tijs/deno-calendar/compare/v0.2.0...v0.2.1

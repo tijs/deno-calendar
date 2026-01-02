@@ -4,6 +4,7 @@
  */
 
 import type { CalendarEventInput } from "../types.ts";
+import { generateVTIMEZONE } from "../utils/timezone.ts";
 
 /**
  * Generate ICS format from event object
@@ -16,22 +17,47 @@ export function generateICS(event: CalendarEventInput): string {
   // Determine if this is an all-day event
   const isAllDay = event.start.length === 10 && event.end.length === 10;
 
-  const dtstart = isAllDay ? formatICSDate(event.start) : formatICSDateTime(new Date(event.start));
-
-  const dtend = isAllDay ? formatICSDate(event.end) : formatICSDateTime(new Date(event.end));
-
   // Build ICS content
   const ics = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//Deno Calendar//CalDAV Client//EN",
-    "BEGIN:VEVENT",
-    `UID:${uid}`,
-    `DTSTAMP:${dtstamp}`,
-    `DTSTART${isAllDay ? ";VALUE=DATE" : ""}:${dtstart}`,
-    `DTEND${isAllDay ? ";VALUE=DATE" : ""}:${dtend}`,
-    `SUMMARY:${escapeICSValue(event.summary)}`,
   ];
+
+  // Add VTIMEZONE component if timezone is specified
+  if (event.timezone && !isAllDay) {
+    const vtimezone = generateVTIMEZONE(event.timezone);
+    if (vtimezone) {
+      ics.push(vtimezone);
+    }
+  }
+
+  ics.push("BEGIN:VEVENT");
+  ics.push(`UID:${uid}`);
+  ics.push(`DTSTAMP:${dtstamp}`);
+
+  // Format dates based on timezone
+  if (isAllDay) {
+    ics.push(`DTSTART;VALUE=DATE:${formatICSDate(event.start)}`);
+    ics.push(`DTEND;VALUE=DATE:${formatICSDate(event.end)}`);
+  } else if (event.timezone) {
+    // Use TZID parameter for timezone-aware events
+    const vtimezone = generateVTIMEZONE(event.timezone);
+    if (vtimezone) {
+      ics.push(`DTSTART;TZID=${event.timezone}:${formatICSDateTimeLocal(new Date(event.start))}`);
+      ics.push(`DTEND;TZID=${event.timezone}:${formatICSDateTimeLocal(new Date(event.end))}`);
+    } else {
+      // Fallback to UTC if timezone not supported
+      ics.push(`DTSTART:${formatICSDateTime(new Date(event.start))}`);
+      ics.push(`DTEND:${formatICSDateTime(new Date(event.end))}`);
+    }
+  } else {
+    // Default to UTC
+    ics.push(`DTSTART:${formatICSDateTime(new Date(event.start))}`);
+    ics.push(`DTEND:${formatICSDateTime(new Date(event.end))}`);
+  }
+
+  ics.push(`SUMMARY:${escapeICSValue(event.summary)}`);
 
   // Add optional fields
   if (event.description) {
@@ -88,6 +114,20 @@ function formatICSDateTime(date: Date): string {
   const minute = date.getUTCMinutes().toString().padStart(2, "0");
   const second = date.getUTCSeconds().toString().padStart(2, "0");
   return `${year}${month}${day}T${hour}${minute}${second}Z`;
+}
+
+/**
+ * Format datetime for ICS (local time with TZID)
+ * Format: YYYYMMDDTHHMMSS (no Z suffix)
+ */
+function formatICSDateTimeLocal(date: Date): string {
+  const year = date.getFullYear().toString();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const hour = date.getHours().toString().padStart(2, "0");
+  const minute = date.getMinutes().toString().padStart(2, "0");
+  const second = date.getSeconds().toString().padStart(2, "0");
+  return `${year}${month}${day}T${hour}${minute}${second}`;
 }
 
 /**

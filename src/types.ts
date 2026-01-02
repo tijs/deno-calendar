@@ -60,6 +60,7 @@ export interface CalendarEventInput {
   description?: string;
   recurrence?: RecurrenceRule;
   uid?: string; // Optional: preserve UID when updating existing events
+  timezone?: string; // Optional: IANA timezone ID (e.g., "Europe/Amsterdam", "America/Los_Angeles")
 }
 
 /**

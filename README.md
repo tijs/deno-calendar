@@ -96,9 +96,18 @@ for (const event of events) {
 
 ### Writing Events
 
-Currently, all events are written in UTC format. Provide times as ISO strings:
+Events can be written with full timezone support using VTIMEZONE components (v0.4.0+):
 
 ```typescript
+// With timezone (generates VTIMEZONE component)
+await client.createEvent(calendarUrl, {
+  summary: "Team Meeting",
+  start: "2025-01-10T14:00:00", // Local time
+  end: "2025-01-10T15:00:00",
+  timezone: "America/Los_Angeles", // IANA timezone ID
+});
+
+// Without timezone (uses UTC)
 await client.createEvent(calendarUrl, {
   summary: "Team Meeting",
   start: "2025-01-10T22:00:00Z", // UTC
@@ -106,7 +115,18 @@ await client.createEvent(calendarUrl, {
 });
 ```
 
-**Note**: Full timezone support with VTIMEZONE components is planned for v1.0.0.
+**Supported timezones:**
+- `Europe/Amsterdam` (CET/CEST)
+- `America/Los_Angeles` (PST/PDT)
+- `America/New_York` (EST/EDT)
+- `Europe/London` (GMT/BST)
+- `Asia/Tokyo` (JST - no DST)
+- `Australia/Sydney` (AEDT/AEST)
+
+**Benefits of timezone support:**
+- Events display correctly in user's local timezone
+- DST (Daylight Saving Time) handled automatically
+- Full RFC 5545 compliance with VTIMEZONE components
 
 ## Documentation
 
