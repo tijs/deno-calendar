@@ -9,9 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        deno-version: [1.x, 2.x]
 
     steps:
       - uses: actions/checkout@v5
@@ -19,7 +16,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: ${{ matrix.deno-version }}
+          deno-version: 2.x
 
       - name: Check formatting
         run: deno fmt --check
@@ -34,11 +31,9 @@ jobs:
         run: deno test --allow-net --allow-env --coverage=coverage
 
       - name: Generate coverage report
-        if: matrix.deno-version == '2.x'
         run: deno coverage coverage --lcov --output=coverage.lcov
 
       - name: Upload coverage to Codecov
-        if: matrix.deno-version == '2.x'
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage.lcov
