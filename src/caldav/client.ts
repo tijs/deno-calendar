@@ -357,22 +357,41 @@ export class CalDAVClient {
 
         const xml = await response.text();
 
-        // Parse calendar data from response
-        const calendarDataMatches = xml.matchAll(
-          /<calendar-data[^>]*>([\s\S]*?)<\/calendar-data>/g,
+        // Parse response elements (each contains etag + calendar-data)
+        const responseMatches = xml.matchAll(
+          /<(?:d:)?response[^>]*>([\s\S]*?)<\/(?:d:)?response>/g,
         );
 
-        for (const match of calendarDataMatches) {
-          const icsData = match[1]
-            .replace(/&lt;/g, "<")
-            .replace(/&gt;/g, ">")
-            .replace(/&amp;/g, "&")
-            .replace(/&quot;/g, '"')
-            .replace(/&apos;/g, "'");
+        for (const responseMatch of responseMatches) {
+          const responseXml = responseMatch[1];
 
-          const event = parseICS(icsData, calendar.displayName);
-          if (event) {
-            allEvents.push(event);
+          // Extract ETag
+          const etagMatch = responseXml.match(
+            /<(?:d:)?getetag[^>]*>(.*?)<\/(?:d:)?getetag>/,
+          );
+          const etag = etagMatch ? etagMatch[1].replace(/&quot;|"/g, "").trim() : undefined;
+
+          // Extract calendar-data
+          const calendarDataMatch = responseXml.match(
+            /<(?:c:)?calendar-data[^>]*>([\s\S]*?)<\/(?:c:)?calendar-data>/,
+          );
+
+          if (calendarDataMatch) {
+            const icsData = calendarDataMatch[1]
+              .replace(/&lt;/g, "<")
+              .replace(/&gt;/g, ">")
+              .replace(/&amp;/g, "&")
+              .replace(/&quot;/g, '"')
+              .replace(/&apos;/g, "'");
+
+            const event = parseICS(icsData, calendar.displayName);
+            if (event) {
+              // Add ETag to event
+              if (etag) {
+                event.etag = etag;
+              }
+              allEvents.push(event);
+            }
           }
         }
       } catch (calError) {

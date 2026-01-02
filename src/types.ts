@@ -15,6 +15,7 @@ export interface CalendarEvent {
   uid: string;
   all_day?: boolean;
   timezone?: string; // IANA timezone (e.g., "America/Los_Angeles") if present in ICS
+  etag?: string; // ETag for optimistic concurrency control (used for updates/deletes)
 }
 
 /**

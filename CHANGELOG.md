@@ -13,6 +13,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Unified client abstraction for multi-provider usage
 - Full VTIMEZONE support for event creation
 
+## [0.2.1] - 2026-01-02
+
+### Fixed
+
+- **ETag extraction**: Fixed updateEvent() ETag conflicts by properly parsing ETags from REPORT
+  responses
+- Added `etag` field to CalendarEvent interface for optimistic concurrency control
+- Events now include their ETag when fetched, eliminating "Event was modified by another client"
+  errors
+
 ## [0.2.0] - 2026-01-02
 
 ### Added
