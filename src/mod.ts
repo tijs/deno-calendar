@@ -28,8 +28,20 @@ export { extractICSField, parseICS, parseICSDate } from "./caldav/ics-parser.ts"
 export { generateICS } from "./caldav/ics-generator.ts";
 
 // Export Google Calendar client
-export { GoogleCalendarClient } from "./google/client.ts";
-export type { GoogleCalendarClientConfig } from "./google/client.ts";
+export { GOOGLE_CALENDAR_SCOPES, GoogleCalendarClient } from "./google/client.ts";
+export type {
+  GoogleCalendarClientConfig,
+  GoogleCalendarOAuthConfig,
+  GoogleCalendarServiceAccountConfig,
+} from "./google/client.ts";
+
+// Export Google Service Account helpers
+export {
+  getAccessToken as getServiceAccountAccessToken,
+  loadServiceAccountCredentials,
+  parseServiceAccountCredentials,
+} from "./google/service-account.ts";
+export type { ServiceAccountConfig, ServiceAccountCredentials } from "./google/service-account.ts";
 
 // Export Google OAuth helpers
 export {

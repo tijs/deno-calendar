@@ -12,6 +12,37 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Unified client abstraction for multi-provider usage (v2.0.0)
 - Microsoft Outlook/Office 365 support via Microsoft Graph API (v2.0.0)
 
+## [1.2.0] - 2026-01-11
+
+### Added
+
+- **Google Service Account authentication** - Alternative to OAuth for server-to-server access
+  - `ServiceAccountCredentials` interface for JSON key file contents
+  - `GoogleCalendarServiceAccountConfig` for service account configuration
+  - `getServiceAccountAccessToken()` for obtaining access tokens from service account
+  - `loadServiceAccountCredentials()` to load credentials from file
+  - `parseServiceAccountCredentials()` to parse credentials from string or object
+  - JWT-based authentication with RS256 signing
+  - Automatic token caching with refresh before expiry
+  - Support for domain-wide delegation via `subject` parameter
+- `GOOGLE_CALENDAR_SCOPES` constant object for calendar API scopes
+- Comprehensive service account test suite (9 new tests)
+
+### Changed
+
+- `GoogleCalendarClientConfig` is now a union type accepting either OAuth or service account config
+- `GoogleCalendarClient` constructor accepts both OAuth config (with `accessToken`) or service
+  account config (with `serviceAccountCredentials`)
+- Request authentication now uses async `getToken()` method for both auth types
+
+### Benefits
+
+- Service accounts don't require user OAuth consent or token refresh handling
+- Credentials from JSON key file never expire (until revoked)
+- Ideal for server-to-server calendar access (e.g., ROCI agent)
+- No more token expiration issues with long-running services
+- Backward compatible - existing OAuth code continues to work unchanged
+
 ## [1.1.0] - 2026-01-02
 
 ### Added
@@ -172,7 +203,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Secure credential management
 - ETag-based optimistic concurrency control
 
-[Unreleased]: https://github.com/tijs/deno-calendar/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/tijs/deno-calendar/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/tijs/deno-calendar/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/tijs/deno-calendar/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/tijs/deno-calendar/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/tijs/deno-calendar/compare/v0.3.0...v0.4.0
