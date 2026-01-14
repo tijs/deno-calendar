@@ -36,6 +36,8 @@ export function parseICS(
 
     // Handle recurring events
     if (rrule) {
+      event.isRecurring = true;
+      event.originalStart = event.start; // Preserve original start before adjustment
       const nextOccurrence = calculateNextOccurrence(event.start, rrule);
       if (nextOccurrence) {
         event.start = nextOccurrence;

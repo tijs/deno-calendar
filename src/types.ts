@@ -17,6 +17,8 @@ export interface CalendarEvent {
   timezone?: string; // IANA timezone (e.g., "America/Los_Angeles") if present in ICS
   etag?: string; // ETag for optimistic concurrency control (used for updates/deletes)
   attendance_status?: "accepted" | "declined" | "tentative" | "needs_action"; // User's attendance status (Google Calendar only)
+  originalStart?: string; // For recurring events: the original start date before recurrence adjustment
+  isRecurring?: boolean; // True if this event has a recurrence rule
 }
 
 /**

@@ -12,6 +12,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Unified client abstraction for multi-provider usage (v2.0.0)
 - Microsoft Outlook/Office 365 support via Microsoft Graph API (v2.0.0)
 
+## [1.3.0] - 2026-01-14
+
+### Added
+
+- **Recurring event original date tracking** - CalendarEvent now includes `originalStart` and
+  `isRecurring` fields
+  - `originalStart` preserves the base date before recurrence adjustment
+  - `isRecurring` flag indicates if the event has a recurrence rule
+  - Enables reliable event lookup by original creation date for update/delete operations
+
+### Fixed
+
+- Calendar update/delete can now find recurring events by their original start date, not just the
+  next occurrence date
+
 ## [1.2.0] - 2026-01-11
 
 ### Added
